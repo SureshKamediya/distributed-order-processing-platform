@@ -410,12 +410,9 @@
     "enabled" : true,
     "totp" : false,
     "credentials" : [ {
-      "id" : "f228b1f9-4426-49f2-a294-a4b11c6500cb",
       "type" : "password",
-      "userLabel" : "My password",
-      "createdDate" : 1713932791558,
-      "secretData" : "{\"value\":\"bmrLYs4d8W0Hbb2iDZJAm7hYbHoSx5sdTfxv4zBu/Uie09R7vWzvFckKU5BjFCEXx1IyAoKzHz8s97Isr8iowQ==\",\"salt\":\"7E0YcARZXYkHnMwMF0lL/Q==\",\"additionalParameters\":{}}",
-      "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      "value" : "suresh1234",
+      "temporary" : false
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],

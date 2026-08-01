@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -42,9 +43,14 @@ public abstract class AbstractIT {
     @Autowired
     protected MockMvc mockMvc;
 
+    @Autowired
+    Environment environment;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        System.out.println(
+                "JWK URI = " + environment.getProperty("spring.security.oauth2.resourceserver.jwt.jwk-set-uri"));
     }
 
     protected static void mockGetProductByCode(String code, String name, BigDecimal price) {

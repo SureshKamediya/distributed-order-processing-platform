@@ -11,6 +11,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ ord
       { error: "Unauthorized", reason: session?.error ?? "no_session" },
       { status: 401 }
     );
+
   }
 
   const { orderNumber } = await params;

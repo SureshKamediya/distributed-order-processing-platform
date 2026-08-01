@@ -37,5 +37,6 @@ class SwaggerConfig {
                     urls.add(swaggerUrl);
                 });
         swaggerUiConfigProperties.setUrls(urls);
+
     }
 }

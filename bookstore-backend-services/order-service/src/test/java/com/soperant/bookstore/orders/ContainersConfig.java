@@ -51,6 +51,9 @@ public class ContainersConfig {
             registry.add(
                     "spring.security.oauth2.resourceserver.jwt.issuer-uri",
                     () -> keycloak.getAuthServerUrl() + "/realms/" + realmName);
+            registry.add(
+                    "spring.security.oauth2.resourceserver.jwt.jwk-set-uri",
+                    () -> keycloak.getAuthServerUrl() + "/realms/" + realmName + "/protocol/openid-connect/certs");
         };
     }
 }

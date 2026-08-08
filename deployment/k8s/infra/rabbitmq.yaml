@@ -43,14 +43,18 @@ spec:
               command: ["rabbitmq-diagnostics", "check_port_connectivity"]
             initialDelaySeconds: 20
             periodSeconds: 30
+            timeoutSeconds: 10
           livenessProbe:
             exec:
               command: ["rabbitmq-diagnostics", "check_port_connectivity"]
             initialDelaySeconds: 30
             periodSeconds: 30
+            timeoutSeconds: 10
           resources:
+            requests:
+              memory: 150Mi
             limits:
-              memory: 500Mi
+              memory: 400Mi
       volumes:
         - name: rabbitmq-storage
           persistentVolumeClaim:

@@ -21,6 +21,11 @@ spec:
           ports:
             - containerPort: 1025
             - containerPort: 8025
+          resources:
+            requests:
+              memory: 50Mi
+            limits:
+              memory: 100Mi
 ---
 # Internal SMTP access for notification-service
 apiVersion: v1

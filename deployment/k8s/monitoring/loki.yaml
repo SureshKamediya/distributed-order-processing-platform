@@ -35,6 +35,11 @@ spec:
           volumeMounts:
             - name: loki-storage
               mountPath: /loki
+          resources:
+            requests:
+              memory: 200Mi
+            limits:
+              memory: 400Mi
       volumes:
         - name: loki-storage
           persistentVolumeClaim:

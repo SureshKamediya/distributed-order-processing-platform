@@ -61,6 +61,11 @@ spec:
             - name: tempo-config
               mountPath: /etc/tempo-config.yml
               subPath: tempo.yml
+          resources:
+            requests:
+              memory: 150Mi
+            limits:
+              memory: 300Mi
       volumes:
         - name: tempo-config
           configMap:

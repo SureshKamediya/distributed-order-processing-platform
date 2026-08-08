@@ -43,8 +43,10 @@ spec:
             - secretRef:
                 name: bookstore-ui-secrets
           resources:
+            requests:
+              memory: 150Mi
             limits:
-              memory: 700Mi
+              memory: 350Mi
 ---
 apiVersion: v1
 kind: Service

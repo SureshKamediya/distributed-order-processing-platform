@@ -21,8 +21,6 @@ kubectl cluster-info --context "kind-${CLUSTER_NAME}"
 echo "Nodes:"
 kubectl get nodes -o wide
 
-echo "Cluster '${CLUSTER_NAME}' is ready."
-
 echo "Installing NGINX Ingress..."
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
@@ -39,5 +37,7 @@ kubectl wait --namespace ingress-nginx \
   --timeout=180s
 
 echo "\n-----------------------------------------------------\n"
+
+echo "Cluster '${CLUSTER_NAME}' is ready."
 
 echo "Happy Sailing!"

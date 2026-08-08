@@ -34,8 +34,10 @@ spec:
             - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
               value: "true"
           resources:
+            requests:
+              memory: 400Mi
             limits:
-              memory: 2Gi
+              memory: 768Mi
           volumeMounts:
             - name: realm-config
               mountPath: /opt/keycloak/data/import

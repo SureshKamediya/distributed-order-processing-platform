@@ -38,7 +38,12 @@ spec:
                 name: catalog-service-config
             - secretRef:
                 name: postgres-credentials
+          env:
+            - name: BPL_JVM_THREAD_COUNT
+              value: "50"
           resources:
+            requests:
+              memory: 400Mi
             limits:
               memory: 700Mi
 ---

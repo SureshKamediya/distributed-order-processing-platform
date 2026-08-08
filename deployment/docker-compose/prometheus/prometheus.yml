@@ -34,8 +34,8 @@ scrape_configs:
   static_configs:
     - targets: ['api-gateway:8989']
 
-- job_name: 'bookstore-webapp'
-  metrics_path: '/actuator/prometheus'
+- job_name: 'bookstore-ui'
+  metrics_path: '/api/metrics'
   scrape_interval: 5s
   static_configs:
-    - targets: ['bookstore-webapp:8080']
+    - targets: ['bookstore-ui:4000']

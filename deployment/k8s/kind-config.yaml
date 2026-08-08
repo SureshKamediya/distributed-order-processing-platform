@@ -1,0 +1,38 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: distributed-order-processing-cluster
+
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      # Ingress (nginx controller) - app.bookstore.local, api.bookstore.local, etc.
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+      # NodePort services - each must be mapped individually to reach it from the host.
+      # These match the nodePort values set in the k8s manifests below.
+      - containerPort: 30025   # mailhog-ui
+        hostPort: 30025
+        protocol: TCP
+      - containerPort: 30030   # grafana
+        hostPort: 30030
+        protocol: TCP
+      - containerPort: 30672   # bookstore-rabbitmq-management
+        hostPort: 30672
+        protocol: TCP
+
+  - role: worker
+
+#networking:
+  # Bump these if they clash with anything else on your machine
+  #podSubnet: "10.244.0.0/16"
+  #serviceSubnet: "10.96.0.0/12"

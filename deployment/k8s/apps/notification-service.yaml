@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notification-service-config
+  namespace: bookstore
+data:
+  SPRING_PROFILES_ACTIVE: "docker"
+  DB_URL: "jdbc:postgresql://notifications-db:5432/postgres"
+  RABBITMQ_HOST: "bookstore-rabbitmq"
+  RABBITMQ_PORT: "5672"
+  MAIL_HOST: "mailhog"
+  MAIL_PORT: "1025"
+  MANAGEMENT_TRACING_ENABLED: "true"
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "http://tempo:9411"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: bookstore
+  labels:
+    app: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+        logging: "promtail"
+    spec:
+      containers:
+        - name: notification-service
+          image: sureshkamediya/bookstore-notification-service
+          ports:
+            - containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: notification-service-config
+            - secretRef:
+                name: postgres-credentials
+            - secretRef:
+                name: rabbitmq-credentials
+          resources:
+            limits:
+              memory: 700Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: bookstore
+spec:
+  type: ClusterIP
+  selector:
+    app: notification-service
+  ports:
+    - port: 8083
+      targetPort: 8083

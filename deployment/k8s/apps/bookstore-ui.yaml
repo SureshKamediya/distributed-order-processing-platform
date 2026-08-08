@@ -1,0 +1,60 @@
+# Your GitHub Actions workflow already builds and pushes sureshkamediya/bookstore-ui to Docker Hub
+# on merges to main, so k8s can pull it normally — no kind load docker-image needed, as long as
+# that workflow has actually run since your last change (check the Actions tab if the pod fails
+# to pull or is running stale code).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookstore-ui-config
+  namespace: bookstore
+data:
+  NEXTAUTH_URL: "http://app.bookstore.local"
+  KEYCLOAK_CLIENT_ID: "bookstore-ui"
+  KEYCLOAK_ISSUER: "http://auth.bookstore.local/realms/bookstore"
+  KEYCLOAK_ISSUER_INTERNAL: "http://keycloak:9191/realms/bookstore"
+  API_GATEWAY_URL: "http://api-gateway:8989"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstore-ui
+  namespace: bookstore
+  labels:
+    app: bookstore-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookstore-ui
+  template:
+    metadata:
+      labels:
+        app: bookstore-ui
+        logging: "promtail"
+    spec:
+      containers:
+        - name: bookstore-ui
+          image: sureshkamediya/bookstore-ui
+          ports:
+            - containerPort: 4000
+          envFrom:
+            - configMapRef:
+                name: bookstore-ui-config
+            - secretRef:
+                name: bookstore-ui-secrets
+          resources:
+            limits:
+              memory: 700Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookstore-ui
+  namespace: bookstore
+spec:
+  type: ClusterIP
+  selector:
+    app: bookstore-ui
+  ports:
+    - port: 4000
+      targetPort: 4000

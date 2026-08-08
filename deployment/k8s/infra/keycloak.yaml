@@ -1,0 +1,58 @@
+# The realm import ConfigMap now lives in keycloak-realm-configmap.yaml (generated from your
+# bookstore-realm.json) — apply that alongside this file, no manual kubectl command needed.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: bookstore
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:26.3.0
+          args: ["start-dev", "--import-realm", "--http-port=9191"]
+          ports:
+            - containerPort: 9191
+          envFrom:
+            - secretRef:
+                name: keycloak-admin-credentials
+          env:
+            # Point this at the Ingress host once you've set it up (see ingress.yaml) —
+            # Keycloak uses this to build issuer URLs your browser and services will hit.
+            - name: KC_HOSTNAME
+              value: "http://auth.bookstore.local"
+            - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
+              value: "true"
+          resources:
+            limits:
+              memory: 2Gi
+          volumeMounts:
+            - name: realm-config
+              mountPath: /opt/keycloak/data/import
+      volumes:
+        - name: realm-config
+          configMap:
+            name: keycloak-realm-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: bookstore
+spec:
+  type: ClusterIP
+  selector:
+    app: keycloak
+  ports:
+    - port: 9191
+      targetPort: 9191

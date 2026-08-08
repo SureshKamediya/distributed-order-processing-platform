@@ -1,0 +1,61 @@
+# Requires an ingress-nginx controller installed on the cluster first:
+#   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+#
+# Heads up (following on from what we discussed earlier): the ingress-nginx project was
+# archived in March 2026 — it still works fine for local learning and kind's own docs still
+# point to it, but it gets no further fixes. If you carry this into anything beyond local
+# learning, that's the point to look at Gateway API + kgateway/NGINX Gateway Fabric instead.
+#
+# Add these to your Windows hosts file (C:\Windows\System32\drivers\etc\hosts) pointing at 127.0.0.1:
+#   127.0.0.1 app.bookstore.local
+#   127.0.0.1 api.bookstore.local
+#   127.0.0.1 auth.bookstore.local
+#   127.0.0.1 prometheus.bookstore.local
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bookstore-ingress
+  namespace: bookstore
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: app.bookstore.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bookstore-ui
+                port:
+                  number: 4000
+    - host: api.bookstore.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 8989
+    - host: auth.bookstore.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 9191
+    - host: prometheus.bookstore.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus
+                port:
+                  number: 9090
